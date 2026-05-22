@@ -73,7 +73,7 @@ export default function LoginPage() {
           src={skyBg}
           alt=""
           aria-hidden="true"
-          className="login-sky-drift absolute left-[-6%] top-[-56px] h-[calc(100%_+_112px)] w-[112%] max-w-none object-cover"
+          className="login-sky-drift absolute left-[-6%] top-[-296px] h-[calc(100%_+_352px)] w-[112%] max-w-none object-cover"
         />
       </div>
 
