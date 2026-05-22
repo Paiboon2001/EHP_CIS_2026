@@ -5,5 +5,9 @@ import react from '@vitejs/plugin-react'
 // `base` matches the GitHub Pages project path: https://<user>.github.io/EHP_CIS_2026/
 export default defineConfig({
   base: '/EHP_CIS_2026/',
+  // GitHub Pages serves the `docs/` folder of the main branch.
+  build: {
+    outDir: 'docs',
+  },
   plugins: [react()],
 })
