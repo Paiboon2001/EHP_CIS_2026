@@ -11,8 +11,6 @@ import {
   EditIcon,
   CheckIcon,
 } from '../components/icons.jsx'
-import idcardPhoto from '../assets/opd/idcard-photo.jpg'
-import bookingPhoto from '../assets/opd/booking-photo.jpg'
 
 const TABS = [
   'ข้อมูลทั่วไป',
@@ -578,39 +576,6 @@ function RelativesSection() {
   )
 }
 
-/* --- media card with blurred photo background (ID reader / booking) --- */
-function MediaActionCard({ image, title, subtitle }) {
-  return (
-    <button
-      type="button"
-      className="relative min-h-[88px] flex-1 overflow-hidden rounded-xl p-3 text-left shadow-[0px_1px_7px_0px_rgba(0,122,255,0.15)]"
-      style={{
-        backgroundImage: 'linear-gradient(130deg, #2e9ae2 32.8%, #97d0f6 100%)',
-      }}
-    >
-      {/* blurred photo + dark gradient, scoped to a 207×138 box as in Figma */}
-      <div className="pointer-events-none absolute left-1/2 top-[calc(50%+6.5px)] h-[138px] w-[207px] -translate-x-1/2 -translate-y-1/2 blur-[5px]">
-        <img src={image} alt="" className="absolute inset-0 size-full object-cover" />
-        <div
-          className="absolute inset-0"
-          style={{
-            backgroundImage:
-              'linear-gradient(151deg, rgba(0,0,0,0.5) 6%, rgba(102,102,102,0) 78%)',
-          }}
-        />
-      </div>
-      <div className="relative flex flex-col">
-        <span className="font-sarabun text-sm font-semibold leading-[18px] tracking-[0.26px] text-white">
-          {title}
-        </span>
-        <span className="font-sarabun text-[10px] leading-[18px] tracking-[0.26px] text-white">
-          {subtitle}
-        </span>
-      </div>
-    </button>
-  )
-}
-
 /* --- camera capture modal (getUserMedia) --- */
 function CameraModal({ onCapture, onClose }) {
   const videoRef = useRef(null)
@@ -812,20 +777,6 @@ function MediaColumn() {
         </div>
       </div>
 
-      {/* ID card reader */}
-      <MediaActionCard
-        image={idcardPhoto}
-        title="อ่านบัตรประชาชน"
-        subtitle="นำบัตรประชาใส่เครื่อง"
-      />
-
-      {/* Online booking */}
-      <MediaActionCard
-        image={bookingPhoto}
-        title="จองนัดหมายออนไลน์"
-        subtitle="เลือกผู้ป่วยสำหรับการจอง"
-      />
-
       {cameraOpen && (
         <CameraModal
           onCapture={(dataUrl) => {
@@ -980,7 +931,6 @@ function TasksMenu() {
 export default function OpdDetails() {
   const navigate = useNavigate()
   const [openVisit, setOpenVisit] = useState(true)
-  const [newHn, setNewHn] = useState(true)
   const [activeTab, setActiveTab] = useState(0)
 
   function handleLogout() {
@@ -1013,11 +963,6 @@ export default function OpdDetails() {
                 checked={openVisit}
                 onChange={() => setOpenVisit((v) => !v)}
                 label="เปิด Visit หลังจากบันทึก"
-              />
-              <HeaderCheckbox
-                checked={newHn}
-                onChange={() => setNewHn((v) => !v)}
-                label="กำหนดเลข HN ใหม่"
               />
             </div>
           </div>
