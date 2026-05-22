@@ -15,8 +15,15 @@ import {
 
 // Sub-menu entries shown when the OPD Registery menu is expanded.
 // `path` items navigate to a real page; the rest are placeholders.
+// `match` lists extra routes that belong to the same menu entry, so it
+// stays highlighted (e.g. the patient detail page under เวชระเบียนผู้ป่วย).
 const SUBMENU = [
-  { label: 'เวชระเบียนผู้ป่วย', Icon: BookOpenIcon, path: '/opd/medical-records' },
+  {
+    label: 'เวชระเบียนผู้ป่วย',
+    Icon: BookOpenIcon,
+    path: '/opd/medical-records',
+    match: ['/opd/details'],
+  },
   { label: 'ทะเบียนผู้ป่วย', Icon: FileHeartIcon },
   { label: 'ส่งตรวจผู้ป่วย', Icon: FileDownloadIcon },
   { label: 'ทะเบียนผู้มารับบริการ', Icon: FileCheckIcon },
@@ -43,7 +50,6 @@ export default function OpdMenu({ className = '', collapsed = false }) {
       <button
         type="button"
         onClick={() => navigate('/opd/medical-records')}
-        title="OPD Registery"
         className={`flex w-full items-center justify-center rounded-lg p-2 transition-all ${
           onOpdRoute
             ? 'bg-black text-white'
@@ -90,7 +96,10 @@ export default function OpdMenu({ className = '', collapsed = false }) {
         <div className="mt-1 flex flex-col rounded-lg bg-white p-2 shadow-[0px_0px_4px_0px_rgba(5,53,131,0.1),0px_4px_4px_0px_rgba(5,53,131,0.15),0px_16px_32px_0px_rgba(5,53,131,0.1)]">
           {SUBMENU.map((item) => {
             const ItemIcon = item.Icon
-            const active = item.path && location.pathname === item.path
+            const active =
+              !!item.path &&
+              (location.pathname === item.path ||
+                !!item.match?.includes(location.pathname))
             return (
               <button
                 key={item.label}

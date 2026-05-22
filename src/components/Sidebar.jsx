@@ -5,6 +5,7 @@ import userAvatar from '../assets/user-avatar.png'
 import profileCardBg from '../assets/profile-card-bg.png'
 import { GridIcon, FolderIcon, LayoutRightIcon, LogoutIcon } from './icons.jsx'
 import OpdMenu from './OpdMenu.jsx'
+import Tooltip from './Tooltip.jsx'
 
 // Sidebar navigation items. `icon: 'grid'` marks the dashboard entry;
 // `type: 'opd'` is the collapsible OPD Registery menu (own component);
@@ -30,7 +31,6 @@ function NavLink({ item, active, onClick, collapsed }) {
     <button
       type="button"
       onClick={onClick}
-      title={collapsed ? item.label : undefined}
       className={`flex w-full items-center gap-2 rounded-lg p-2 text-left transition-all ${
         collapsed ? 'justify-center' : ''
       } ${
@@ -105,19 +105,20 @@ export default function Sidebar({ onLogout }) {
           collapsed ? 'px-2' : 'px-4'
         }`}
       >
-        {NAV_ITEMS.map((item) =>
-          item.type === 'opd' ? (
-            <OpdMenu key={item.label} collapsed={collapsed} />
-          ) : (
-            <NavLink
-              key={item.label}
-              item={item}
-              active={item.path === location.pathname}
-              onClick={() => item.path && navigate(item.path)}
-              collapsed={collapsed}
-            />
-          ),
-        )}
+        {NAV_ITEMS.map((item) => (
+          <Tooltip key={item.label} label={item.label} disabled={!collapsed}>
+            {item.type === 'opd' ? (
+              <OpdMenu collapsed={collapsed} />
+            ) : (
+              <NavLink
+                item={item}
+                active={item.path === location.pathname}
+                onClick={() => item.path && navigate(item.path)}
+                collapsed={collapsed}
+              />
+            )}
+          </Tooltip>
+        ))}
       </nav>
 
       {/* Profile card */}

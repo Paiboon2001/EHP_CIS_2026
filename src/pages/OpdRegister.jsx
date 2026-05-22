@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar.jsx'
 import TextSlide from '../components/TextSlide.jsx'
@@ -86,6 +86,37 @@ export default function OpdRegister() {
   const navigate = useNavigate()
   const [search, setSearch] = useState('')
   const [selectedAction, setSelectedAction] = useState(null)
+  const [searchOpen, setSearchOpen] = useState(false)
+  const searchRef = useRef(null)
+
+  // Close the results dropdown on outside-click or Escape.
+  useEffect(() => {
+    if (!searchOpen) return
+    function onPointerDown(e) {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setSearchOpen(false)
+      }
+    }
+    function onKey(e) {
+      if (e.key === 'Escape') setSearchOpen(false)
+    }
+    document.addEventListener('mousedown', onPointerDown)
+    document.addEventListener('keydown', onKey)
+    return () => {
+      document.removeEventListener('mousedown', onPointerDown)
+      document.removeEventListener('keydown', onKey)
+    }
+  }, [searchOpen])
+
+  const query = search.trim()
+  const searchResults = query
+    ? HISTORY.filter((p) => p.hn.includes(query) || p.name.includes(query))
+    : HISTORY
+
+  function selectPatient() {
+    setSearchOpen(false)
+    navigate('/opd/details')
+  }
 
   function handleLogout() {
     logout()
@@ -111,32 +142,74 @@ export default function OpdRegister() {
 
         <div className="flex w-full max-w-[600px] flex-col items-center gap-8">
           {/* Search */}
-          <form
-            onSubmit={handleSearch}
-            className="flex w-full items-center gap-3 rounded-full bg-white py-1 pl-6 pr-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05),0px_16px_32px_0px_rgba(46,144,193,0.25)]"
-          >
-            <div className="relative min-w-0 flex-1">
-              <input
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                aria-label="ค้นหาเลข HN ผู้ป่วย"
-                className="w-full bg-transparent font-sarabun text-xl text-[#1d212d] outline-none"
-              />
-              {search === '' && (
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
-                  <TextSlide />
+          <div ref={searchRef} className="relative z-20 w-full">
+            {/* Results dropdown — sits behind the search bar (Figma 374:709) */}
+            {searchOpen && (
+              <div className="absolute inset-x-0 top-0 flex max-h-[320px] flex-col overflow-hidden rounded-b-[24px] rounded-t-[32px] bg-white pt-[56px] shadow-[0px_16px_32px_0px_rgba(46,144,193,0.25)]">
+                <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+                  {searchResults.length === 0 ? (
+                    <p className="px-4 py-3 font-sarabun text-sm text-[#798aa3]">
+                      ไม่พบเลข HN ที่ค้นหา
+                    </p>
+                  ) : (
+                    searchResults.map((item, index) => (
+                      <button
+                        key={item.hn}
+                        type="button"
+                        onClick={selectPatient}
+                        className="flex w-full items-center gap-2 px-4 py-3 text-left transition-colors hover:bg-[#f5fbff]"
+                      >
+                        <div className="size-8 shrink-0 overflow-hidden rounded-full bg-[#79ddff]">
+                          <img
+                            src={AVATARS[index % AVATARS.length]}
+                            alt=""
+                            className="size-full object-cover"
+                          />
+                        </div>
+                        <div className="flex min-w-0 flex-1 items-center gap-2">
+                          <p className="min-w-0 flex-1 truncate font-sarabun text-sm font-medium leading-[18px] tracking-[0.26px] text-black">
+                            HN : {item.hn}
+                          </p>
+                          <p className="shrink-0 font-sarabun text-sm leading-[18px] tracking-[0.26px] text-[#798aa3]">
+                            {item.name}
+                          </p>
+                        </div>
+                      </button>
+                    ))
+                  )}
                 </div>
-              )}
-            </div>
-            <button
-              type="submit"
-              aria-label="ค้นหา"
-              className="flex size-12 shrink-0 items-center justify-center rounded-full bg-black text-white transition-opacity hover:opacity-90"
+              </div>
+            )}
+
+            {/* Search bar */}
+            <form
+              onSubmit={handleSearch}
+              className="relative flex w-full items-center gap-3 rounded-full bg-white py-1 pl-6 pr-1 shadow-[0px_4px_4px_0px_rgba(0,0,0,0.05),0px_16px_32px_0px_rgba(46,144,193,0.25)]"
             >
-              <UploadIcon className="size-6" />
-            </button>
-          </form>
+              <div className="relative min-w-0 flex-1">
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onFocus={() => setSearchOpen(true)}
+                  aria-label="ค้นหาเลข HN ผู้ป่วย"
+                  className="w-full bg-transparent font-sarabun text-xl text-[#1d212d] outline-none"
+                />
+                {search === '' && (
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center">
+                    <TextSlide />
+                  </div>
+                )}
+              </div>
+              <button
+                type="submit"
+                aria-label="ค้นหา"
+                className="flex size-12 shrink-0 items-center justify-center rounded-full bg-black text-white transition-opacity hover:opacity-90"
+              >
+                <UploadIcon className="size-6" />
+              </button>
+            </form>
+          </div>
 
           {/* Quick actions — selectable chips */}
           <div className="flex flex-wrap justify-center gap-4">
