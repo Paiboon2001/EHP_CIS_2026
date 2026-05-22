@@ -473,13 +473,13 @@ export default function Homepage() {
               className="left-[41%] top-[44px]"
               color="#c4ff92"
               label="OPD ตรวจง่าย"
-              beakClassName="-bottom-[26px] -right-[6px] rotate-[135deg]"
+              beakClassName="-bottom-[26px] -right-[6px] rotate-180"
             />
             <HeroBadge
               className="left-[60%] top-[130px]"
               color="#03b6f3"
               label="ใส่ใจผู้ป่วย"
-              beakClassName="-bottom-[26px] -left-[6px] -rotate-[135deg]"
+              beakClassName="-bottom-[26px] -left-[6px] -rotate-90"
             />
           </div>
 

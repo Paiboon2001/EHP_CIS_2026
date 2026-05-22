@@ -46,7 +46,10 @@ const HISTORY = [
 
 function HistoryPanel() {
   return (
-    <aside className="flex h-screen w-[250px] shrink-0 flex-col bg-white">
+    <aside
+      className="home-fade-up flex h-screen w-[250px] shrink-0 flex-col bg-white"
+      style={{ animationDelay: '0.24s' }}
+    >
       <div className="flex items-center gap-2 border-b border-[#e9f0f4] p-4">
         <ClockRotateIcon className="size-5 text-black" />
         <h2 className="font-sarabun text-base font-medium tracking-[0.26px] text-black">
@@ -136,11 +139,14 @@ export default function OpdRegister() {
 
       {/* Center workspace */}
       <main className="flex h-screen flex-1 flex-col items-center justify-center gap-14 overflow-hidden p-4 bg-[radial-gradient(47%_47%_at_50%_50%,#79ddff_0%,rgba(121,221,255,0.9)_20%,rgba(183,236,255,0.95)_47%,#f5fbff_75%)]">
-        <h1 className="whitespace-nowrap text-center font-sarabun text-[clamp(18px,2.8vw,40px)] leading-tight tracking-[0.26px] text-black">
+        <h1 className="home-fade-up whitespace-nowrap text-center font-sarabun text-[clamp(18px,2.8vw,40px)] leading-tight tracking-[0.26px] text-black">
           สวัสดี 🙏 คุณ AUANCHAI เราจะทำอะไรกันดีวันนี้
         </h1>
 
-        <div className="flex w-full max-w-[600px] flex-col items-center gap-8">
+        <div
+          className="home-fade-up flex w-full max-w-[600px] flex-col items-center gap-8"
+          style={{ animationDelay: '0.12s' }}
+        >
           {/* Search */}
           <div ref={searchRef} className="relative z-20 w-full">
             {/* Results dropdown — sits behind the search bar (Figma 374:709) */}

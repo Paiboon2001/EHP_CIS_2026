@@ -965,7 +965,7 @@ export default function OpdDetails() {
 
       <main className="flex h-screen flex-1 flex-col overflow-hidden">
         {/* HN top bar — Figma node 183:1209 */}
-        <header className="flex shrink-0 items-start gap-6 border-b border-[#e9f0f4] bg-white px-6 py-4">
+        <header className="home-fade-up flex shrink-0 items-start gap-6 border-b border-[#e9f0f4] bg-white px-6 py-4">
           <button
             type="button"
             onClick={() => navigate(-1)}
@@ -1057,7 +1057,10 @@ export default function OpdDetails() {
         </header>
 
         {/* Tabs */}
-        <div className="shrink-0 px-4 pt-4">
+        <div
+          className="home-fade-up shrink-0 px-4 pt-4"
+          style={{ animationDelay: '0.1s' }}
+        >
           <div className="flex items-center gap-2 overflow-x-auto rounded-lg border border-[#e9f0f4] bg-white p-2">
             {TABS.map((tab, i) => {
               const active = activeTab === i
@@ -1081,7 +1084,10 @@ export default function OpdDetails() {
         </div>
 
         {/* Body — left media column + main form (Figma 284:3385) */}
-        <div className="flex flex-1 gap-4 overflow-hidden px-4 pt-4">
+        <div
+          className="home-fade-up flex flex-1 gap-4 overflow-hidden px-4 pt-4"
+          style={{ animationDelay: '0.2s' }}
+        >
           <MediaColumn />
 
           <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-y-auto pb-4">
