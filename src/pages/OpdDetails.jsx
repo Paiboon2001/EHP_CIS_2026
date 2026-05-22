@@ -434,6 +434,22 @@ function CameraIcon({ className = '' }) {
     </svg>
   )
 }
+function CreditCardIcon({ className = '' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="5" width="20" height="14" rx="2.5" />
+      <path d="M2 10h20" />
+    </svg>
+  )
+}
+function CalendarPlusIcon({ className = '' }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="4.5" width="18" height="17" rx="2.5" />
+      <path d="M3 9.5h18M8 2.5v4M16 2.5v4M12 13v5M9.5 15.5h5" />
+    </svg>
+  )
+}
 
 /* --- header checkbox (custom-styled, Figma controls/tint #0d6fff) --- */
 function HeaderCheckbox({ checked, onChange, label }) {
@@ -678,7 +694,7 @@ function MediaColumn() {
   }
 
   return (
-    <aside className="flex w-[200px] shrink-0 flex-col gap-3 pb-4">
+    <aside className="flex w-[200px] shrink-0 flex-col gap-3 overflow-y-auto pb-4">
       {/* Patient photo */}
       <div className="flex shrink-0 flex-col gap-3 rounded-xl bg-white p-3 shadow-[0px_1px_7px_0px_rgba(0,122,255,0.15)]">
         <div
@@ -777,6 +793,8 @@ function MediaColumn() {
         </div>
       </div>
 
+      <OtherInfoPanel />
+
       {cameraOpen && (
         <CameraModal
           onCapture={(dataUrl) => {
@@ -810,16 +828,17 @@ function OtherInfoCheck({ title, sub }) {
   )
 }
 
-function RightPanel() {
+/* --- "other info" panel — stacked in the left column (Figma 466:541) --- */
+function OtherInfoPanel() {
   return (
-    <aside className="flex w-[200px] shrink-0 flex-col overflow-hidden rounded-xl bg-white shadow-[0px_1px_7px_0px_rgba(0,122,255,0.15)]">
+    <div className="flex shrink-0 flex-col overflow-hidden rounded-xl bg-white shadow-[0px_1px_7px_0px_rgba(0,122,255,0.15)]">
       <div className="flex shrink-0 items-center gap-2 border-b border-[#e9f6ff] px-4 pb-[13px] pt-3">
         <HelpCircleIcon className="size-5 text-[#1a8cff]" />
         <h3 className="font-sarabun text-base font-semibold leading-6 text-[#191c1e]">
           ข้อมูลอื่นๆ
         </h3>
       </div>
-      <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto p-3">
+      <div className="flex flex-col gap-3 p-3">
         <OtherInfoCheck
           title="Area Responsibility"
           sub="อยู่ในเขตความรับผิดชอบ"
@@ -837,7 +856,7 @@ function RightPanel() {
           </div>
         ))}
       </div>
-    </aside>
+    </div>
   )
 }
 
@@ -932,6 +951,8 @@ export default function OpdDetails() {
   const navigate = useNavigate()
   const [openVisit, setOpenVisit] = useState(true)
   const [activeTab, setActiveTab] = useState(0)
+  const [hn, setHn] = useState('09988764568')
+  const [editingHn, setEditingHn] = useState(false)
 
   function handleLogout() {
     logout()
@@ -943,42 +964,96 @@ export default function OpdDetails() {
       <Sidebar onLogout={handleLogout} />
 
       <main className="flex h-screen flex-1 flex-col overflow-hidden">
-        {/* HN top bar */}
+        {/* HN top bar — Figma node 183:1209 */}
         <header className="flex shrink-0 items-start gap-6 border-b border-[#e9f0f4] bg-white px-6 py-4">
           <button
             type="button"
             onClick={() => navigate(-1)}
             aria-label="ย้อนกลับ"
-            className="flex size-6 shrink-0 items-center justify-center rounded-md border border-[#e9f0f4] text-[#1d212d] transition-colors hover:bg-[#f5f8fa]"
+            className="flex size-8 shrink-0 items-center justify-center rounded-md border border-[#e9f0f4] text-[#1d212d] transition-colors hover:bg-[#f5f8fa]"
           >
             <ChevronLeftIcon className="size-4" />
           </button>
 
-          <div className="flex min-w-0 flex-1 flex-col justify-center gap-3">
-            <h2 className="font-sarabun text-xl font-bold leading-[18px] tracking-[0.26px] text-black">
-              HN : 09988764568
-            </h2>
-            <div className="flex items-start gap-4">
-              <HeaderCheckbox
-                checked={openVisit}
-                onChange={() => setOpenVisit((v) => !v)}
-                label="เปิด Visit หลังจากบันทึก"
-              />
+          <div className="flex shrink-0 flex-col justify-center gap-3">
+            <div className="flex items-center gap-3">
+              <h2 className="flex items-center font-sarabun text-xl font-bold leading-[18px] tracking-[0.26px] text-black">
+                <span>HN :&nbsp;</span>
+                {editingHn ? (
+                  <input
+                    value={hn}
+                    onChange={(e) => setHn(e.target.value)}
+                    autoFocus
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === 'Escape')
+                        setEditingHn(false)
+                    }}
+                    onBlur={() => setEditingHn(false)}
+                    className="w-[150px] rounded border border-[#0d6fff] px-1.5 py-0.5 font-sarabun text-xl font-bold text-black outline-none"
+                  />
+                ) : (
+                  <span>{hn}</span>
+                )}
+              </h2>
+              <button
+                type="button"
+                onMouseDown={(e) => e.preventDefault()}
+                onClick={() => setEditingHn((v) => !v)}
+                className="flex shrink-0 items-center gap-1 rounded bg-[#dff2ff] p-1 transition-colors hover:bg-[#cde9fb]"
+              >
+                {editingHn ? (
+                  <CheckIcon className="size-3 text-[#191c1e]" />
+                ) : (
+                  <EditIcon className="size-3 text-[#191c1e]" />
+                )}
+                <span className="font-sarabun text-[10px] font-medium tracking-[0.26px] text-[#191c1e]">
+                  {editingHn ? 'เสร็จ' : 'แก้ไข'}
+                </span>
+              </button>
             </div>
+            <HeaderCheckbox
+              checked={openVisit}
+              onChange={() => setOpenVisit((v) => !v)}
+              label="เปิด Visit หลังจากบันทึก"
+            />
           </div>
 
-          <TasksMenu />
+          {/* center action buttons */}
+          <div className="flex min-w-0 flex-1 items-center justify-center gap-3">
+            <button
+              type="button"
+              className="flex min-w-[198px] shrink-0 items-center justify-center gap-2 rounded-lg border-[0.5px] border-[#0465ae] bg-gradient-to-t from-[#0d6fff] to-[#47bfff] to-[136.25%] px-4 py-2 text-white shadow-[inset_0px_4px_3px_0px_rgba(27,119,255,0.5)] transition-opacity hover:opacity-95"
+            >
+              <CreditCardIcon className="size-5" />
+              <span className="whitespace-nowrap font-sarabun text-base font-semibold tracking-[-0.176px]">
+                อ่านบัตรประชาชน
+              </span>
+            </button>
+            <button
+              type="button"
+              className="flex min-w-[198px] shrink-0 items-center justify-center gap-2 rounded-lg border-[0.5px] border-[#0465ae] bg-gradient-to-t from-[#0d6fff] to-[#47bfff] to-[136.25%] px-4 py-2 text-white shadow-[inset_0px_4px_3px_0px_rgba(27,119,255,0.5)] transition-opacity hover:opacity-95"
+            >
+              <CalendarPlusIcon className="size-5" />
+              <span className="whitespace-nowrap font-sarabun text-base font-semibold tracking-[-0.176px]">
+                จองนัดหมายออนไลน์
+              </span>
+            </button>
+          </div>
 
-          <button
-            type="button"
-            onClick={() => navigate('/opd/medical-records')}
-            className="flex shrink-0 items-center gap-2 rounded-lg border-[0.5px] border-[#242424] bg-gradient-to-t from-black to-[#666] px-4 py-2 text-white shadow-[inset_0px_4px_3px_0px_rgba(110,110,110,0.44)] transition-opacity hover:opacity-95"
-          >
-            <SaveIcon className="size-5" />
-            <span className="font-sarabun text-base font-semibold tracking-[-0.176px]">
-              บันทึก
-            </span>
-          </button>
+          {/* tasks + save */}
+          <div className="flex shrink-0 items-center gap-3">
+            <TasksMenu />
+            <button
+              type="button"
+              onClick={() => navigate('/opd/medical-records')}
+              className="flex shrink-0 items-center gap-2 rounded-lg border-[0.5px] border-[#242424] bg-gradient-to-t from-black to-[#666] px-4 py-2 text-white shadow-[inset_0px_4px_3px_0px_rgba(110,110,110,0.44)] transition-opacity hover:opacity-95"
+            >
+              <SaveIcon className="size-5" />
+              <span className="whitespace-nowrap font-sarabun text-base font-semibold tracking-[-0.176px]">
+                บันทึก
+              </span>
+            </button>
+          </div>
         </header>
 
         {/* Tabs */}
@@ -1005,11 +1080,11 @@ export default function OpdDetails() {
           </div>
         </div>
 
-        {/* Body — only the middle column scrolls; side columns stay fixed */}
-        <div className="flex flex-1 gap-4 overflow-hidden p-4">
+        {/* Body — left media column + main form (Figma 284:3385) */}
+        <div className="flex flex-1 gap-4 overflow-hidden px-4 pt-4">
           <MediaColumn />
 
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-y-auto">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4 overflow-y-auto pb-4">
             <SectionCard
               icon={<UserIcon className="size-[18px]" />}
               title="ข้อมูลทั่วไปของผู้ป่วย"
@@ -1027,8 +1102,6 @@ export default function OpdDetails() {
 
             <RelativesSection />
           </div>
-
-          <RightPanel />
         </div>
       </main>
     </div>
